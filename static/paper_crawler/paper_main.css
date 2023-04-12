@@ -13,8 +13,10 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-image: url('https://images.pexels.com/photos/1229861/pexels-photo-1229861.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1');
-  background-size: auto;
+  background-image: url('https://images.unsplash.com/photo-1484417894907-623942c8ee29?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1332&q=80');
+  background-size: cover;
+  background-repeat: no-repeat ;
+  background-position: 10% 50%;
 }
 
 h1 {
@@ -74,11 +76,10 @@ p {
   height: auto; 
   float: left;
   position:  relative; 
-  background-image: url("https://images.pexels.com/photos/114979/pexels-photo-114979.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940");
+  background-image: url("https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80");
   background-size:  cover;
   border-top-left-radius:  4px; 
   border-bottom-left-radius:  4px; 
-
 }
 
 .quotes 

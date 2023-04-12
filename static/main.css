@@ -1,0 +1,70 @@
+
+.box 
+{
+  display: flex;
+  height: 100px; /* hoặc bất kỳ giá trị nào tùy bạn */
+  padding: 50px;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  background-color: whitesmoke;
+  border-radius: 16px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.container
+{
+  padding: 64px;
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  grid-row: auto auto;
+  grid-column-gap: 20px;
+  grid-row-gap: 20px;
+}
+
+h1 
+{
+  text-align: center;
+  color: #bdc3c7;
+}
+
+body
+{
+  background-image: url('https://images.pexels.com/photos/1229861/pexels-photo-1229861.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1');
+  background-size: auto;
+}
+
+.paper 
+{
+  background-image: url('https://thewire.in/wp-content/uploads/2017/09/concept-18290_1920-1.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  color: white;
+}
+
+.gg_image
+{ 
+  background-image: url('https://images.unsplash.com/photo-1529612700005-e35377bf1415?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: 0 73%;
+}
+
+.box h1
+{
+  display: none;
+}
+
+
+.box:hover
+{
+  opacity: 60%;
+}
+
+.box:hover h1
+{
+  color: black;
+  font-weight: bold;
+  display: inline-block;
+  text-decoration: none  !important;
+}

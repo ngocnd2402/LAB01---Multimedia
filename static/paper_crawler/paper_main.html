@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Crawl ACM Papers</title>
+        <link rel="stylesheet" href="/static/paper_crawler/paper.css">
+    </head>
+    <body>
+        <div class="session">
+          <div class="left">
+            <?xml version="1.0" encoding="UTF-8"?>
+          </div>
+
+          <div class="crawl">
+            <form action="/papercrawl" method="get" class="crawl" autocomplete="off"> 
+                <div class="quotes">
+                    <h1>Crawl ACM Papers</h1>
+                </div>
+                
+                <label for="author_name" class = 'information'>Author name:</label>
+                <input type="text" id="author_name" name="author_name"><br><br>
+                <label for="num_papers" class = 'information'>Number of papers:</label>
+                <input type="number" id="num_papers" name="num_papers"><br><br>
+                <div id="crawl">
+                    <input type="submit" value="Crawl">
+                </div>
+            </form>
+          </div>
+        </div>
+      </body>
+</html>

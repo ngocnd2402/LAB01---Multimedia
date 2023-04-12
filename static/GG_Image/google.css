@@ -1,0 +1,161 @@
+* {
+  font-family: -apple-system, BlinkMacSystemFont, "San Francisco", Helvetica, Arial, sans-serif;
+  font-weight: 300;
+  margin: 0;
+  box-sizing: border-box; /* fix box model */
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(to right, #2b5876, #243b55);
+}
+
+h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #000;
+  opacity: 0.85;
+  margin-bottom: 2rem;
+}
+
+label {
+  font-size: 1rem;
+  color: #000;
+  opacity: 0.8;
+  font-weight: 400;
+}
+
+form {
+  height: fit-content;
+  padding: 3rem;
+  background: #fefefe;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  max-width: 500px;
+  width: 100%;
+  float: right;
+}
+
+p {
+  line-height: 1.55;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  color: #000;
+  opacity: 0.65;
+  font-weight: 400;
+  text-align: center;
+}
+
+
+
+.session 
+{
+  display: flex;
+  width: 100%;
+  max-width: 1000px;
+  margin: 4rem auto;
+  background: #ffffff;
+  border-radius: 0.4rem;
+  box-shadow: 0px 0.2rem 0.6rem -0.1rem rgba(0, 0, 0, 0.12);
+}
+
+.left {
+  width:  1000px; 
+  height: auto; 
+  float: left;
+  position:  relative; 
+  background-image: url("https://images.pexels.com/photos/114979/pexels-photo-114979.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940");
+  background-size:  cover;
+  border-top-left-radius:  4px; 
+  border-bottom-left-radius:  4px; 
+
+}
+
+.quotes 
+{
+  top: 20px;
+  margin-bottom: 30px;
+  text-align: center;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100%;
+  position: inherit;
+}
+
+
+#crawl input:hover
+{
+  background-color: #243b55;
+  color: white;
+  cursor: pointer;
+}
+
+
+h1
+{
+  margin-bottom: 20px;
+}
+
+
+.information 
+{
+  margin-bottom: 10px;
+}
+
+
+input[type="submit"]:hover 
+{
+  background-color: #243b55;
+}
+
+input[type="text"],
+input[type="number"] 
+{
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+}
+
+#crawl {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+#crawl input[type="submit"] {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#crawl input[type="submit"]:hover {
+  background-color: #243b55;
+}
+
+
+
+.crawl
+{
+  min-height: 100%;
+  width: 950px;
+}

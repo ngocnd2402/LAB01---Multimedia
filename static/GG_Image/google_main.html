@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Crawl ACM Papers</title>
+        <link rel="stylesheet" href="/static/GG_Image/google.css">
+    </head>
+    <body>
+        <div class="session">
+          <div class="left">
+            <?xml version="1.0" encoding="UTF-8"?>
+          </div>
+
+          <div class="crawl">
+            <form action="/googlecrawl" method="get" class="crawl_images" autocomplete="off"> 
+                <div class="quotes">
+                    <h1>Google Image Crawler</h1>
+                </div>
+                
+                <label for="object_name" class = 'information'>Object:</label>
+                <input type="text" id="object_name" name="query"><br><br>
+                <label for="num_objects" class = 'information'>Total of samples:</label>
+                <input type="number" id="num_objects" name="total"><br><br>
+                <div id="crawl">
+                    <input type="submit" value="Crawl">
+                </div>
+            </form>
+          </div>
+        </div>
+      </body>
+</html>

@@ -18,7 +18,7 @@ import urllib.request
 import tempfile
 
 app = FastAPI()
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/static", StaticFiles(directory=r"D:\UIT\Năm 2\Kỳ 4\Tính toán đa phương tiện\Lab\Lab01_Crawler\static"), name="static")
 # Định nghĩa API endpoint tới trang chủ
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):

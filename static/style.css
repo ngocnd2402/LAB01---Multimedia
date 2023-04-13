@@ -40,7 +40,7 @@ body
   background-image: url('https://thewire.in/wp-content/uploads/2017/09/concept-18290_1920-1.jpg');
   background-size: cover;
   background-repeat: no-repeat;
-  color: white;
+  background-position: 0 25%;
 }
 
 .gg_image
@@ -48,7 +48,16 @@ body
   background-image: url('https://images.unsplash.com/photo-1529612700005-e35377bf1415?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80');
   background-size: cover;
   background-repeat: no-repeat;
-  background-position: 0 73%;
+  background-position: 0 65%;
+}
+
+
+.news
+{
+  background-image: url('https://images.unsplash.com/photo-1504711434969-e33886168f5c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: 0 50%;
 }
 
 .box h1
@@ -66,6 +75,46 @@ body
 {
   color: black;
   font-weight: bold;
-  display: inline-block;
-  text-decoration: none  !important;
+  display: block;
+}
+
+.box:hover a
+{
+  text-decoration: none ;
+}
+
+
+.MENU a {
+  color: black; /* màu chữ của đường dẫn trong MENU */
+  text-decoration: none; /* loại bỏ đường gạch chân */
+}
+
+.MENU h1 
+{
+  color: black;
+}
+
+.MENU 
+{
+  text-decoration: none;
+  display: block;
+  background-color: #202020;
+  box-sizing: border-box;
+  text-align: center;
+  justify-content: center;
+}
+
+.MENU a h1 
+{
+  color: white;
+  text-decoration: none;
+}
+
+.MENU:hover
+{
+  background-color: white;
+}
+.MENU:hover a h1 
+{
+  color: black;
 }

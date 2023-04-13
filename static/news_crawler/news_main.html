@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Crawl BAOMOI</title>
+        <link rel="stylesheet" href="/static/news_crawler/news.css">
+    </head>
+    <body>
+      <div class="MENU">
+        <a href="/"><h1>MENU</h1></a>
+      </div>
+        <div class="session">
+          <div class="left">
+            <?xml version="1.0" encoding="UTF-8"?>
+          </div>
+
+          <div class="crawl">
+            <form action="/newscrawl" method="get" class="crawl" autocomplete="off"> 
+                <div class="quotes">
+                    <h1>Crawl newspaper</h1>
+                </div>
+            
+                <label for="base_category" class = 'information'>Type:</label>
+                <input type="text" id="base_category" name="base_category"><br><br>
+
+                <label for="nums" class = 'information'>Total:</label>
+                <input type="number" id="nums" name="nums"><br><br>
+
+                <div id="crawl">
+                    <input type="submit" value="Crawl">
+                </div>
+            </form>
+          </div>
+        </div>
+      </body>
+</html>

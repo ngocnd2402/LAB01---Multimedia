@@ -16,6 +16,7 @@ from selenium.webdriver.common.by import By
 from Google_Image_Crawler.Image_Crawler import get_images_from_google
 import urllib.request
 import tempfile
+from News_Crawler.news_crawler import crawl_articles
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory=r"D:\UIT\Năm 2\Kỳ 4\Tính toán đa phương tiện\Lab\Lab01_Crawler\static"), name="static")
@@ -27,7 +28,7 @@ async def index(request: Request):
         return content
 
 
-# PAPER CRAWLER
+# BEGIN PAPER CRAWLER
 @app.get("/paperCrawler", response_class=HTMLResponse)
 async def paper_index():
     with open('./static/paper_crawler/paper_main.html') as f:
@@ -46,7 +47,7 @@ async def crawl(author_name: str, num_papers: int):
     return response
 # END PAPER CRAWLER
 
-# GOOGLE IMAGE CRAWLER
+# BEGIN GOOGLE IMAGE CRAWLER
 @app.get("/googleImageCrawler", response_class=HTMLResponse)
 async def paper_index():
     with open('./static/GG_Image/google_main.html') as f:
@@ -55,9 +56,7 @@ async def paper_index():
 
 @app.get("/googlecrawl")
 async def crawl_images(query:str, total:int):
-    PATH = r"./GG_Image_Crawler/chromedriver/chromedriver.exe"
-    wd = webdriver.Chrome(executable_path=PATH)
-
+    wd = webdriver.Chrome()
     google_urls = ['https://www.google.com/search?q={}&tbm=isch'.format(query)]
     image_urls = set()
     for url in google_urls:
@@ -89,6 +88,27 @@ async def crawl_images(query:str, total:int):
         # Prepare the response and return it
         response = FileResponse(zip_path, media_type='application/octet-stream', filename='images.zip')
         return response
+# END GOOGLE IMAGE CRAWLER 
+
+# BEGIN PAPER CRAWLER
+# Định nghĩa API endpoint cho việc crawl thông tin bài báo
+@app.get("/newsCrawler", response_class=HTMLResponse)
+async def paper_index():
+    with open('./static/news_crawler/news_main.html') as f:
+        content = f.read()
+    return content
+@app.get("/newscrawl")
+async def crawl(base_category: int, nums:int):
+    articles = crawl_articles(base_category, nums, startPage=1, count_recursion=0)
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow(['Title', 'Link', 'Comment'])
+    for article in articles:
+        writer.writerow([article['title'], ', '.join(article['link']), article['comment']])
+    response = StreamingResponse(iter([output.getvalue()]), media_type="text/csv")
+    response.headers["Content-Disposition"] = "attachment; filename=newspapers.csv"
+    return response   
+
 
 if __name__ == "__main__":
-    uvicorn.run('app:app', host="127.0.0.1", port=8000, reload = True)
+    uvicorn.run('app:app', host="127.0.0.1", port=3000, reload = True)

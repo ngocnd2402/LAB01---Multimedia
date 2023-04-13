@@ -1,12 +1,14 @@
-* {
-  font-family: -apple-system, BlinkMacSystemFont, "San Francisco", Helvetica, Arial, sans-serif;
+* 
+{
+  font-family: "San Francisco", Helvetica, Arial, sans-serif;
   font-weight: 300;
   margin: 0;
   box-sizing: border-box; /* fix box model */
 }
 
 html,
-body {
+body 
+{
   height: 100%;
   width: 100%;
   margin: 0;
@@ -80,6 +82,7 @@ p {
   background-size:  cover;
   border-top-left-radius:  4px; 
   border-bottom-left-radius:  4px; 
+
 }
 
 .quotes 
@@ -154,10 +157,53 @@ input[type="number"]
   background-color: #243b55;
 }
 
-
-
 .crawl
 {
   min-height: 100%;
   width: 950px;
+}
+
+.MENU h1 
+{
+  color: black;
+}
+
+.MENU {
+  display: block;
+  position: fixed;
+  top: 0;
+  text-align: center;
+  background-color: #202020;
+  width: fit-content;
+  height: fit-content;
+  box-sizing: border-box;
+  z-index: 999;
+  border-radius: 16px;
+  padding: 5px;
+}
+
+.MENU h1 {
+  display: inline-block;
+  color: white;
+  margin: 0;
+  padding: 10px 0;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+
+.MENU a {
+  color: black; /* màu chữ của đường dẫn trong MENU */
+  text-decoration: none; /* loại bỏ đường gạch chân */
+}
+
+
+.MENU:hover {
+  background-color: white;
+  cursor: pointer;
+}
+
+.MENU:hover a h1 
+{
+  color: black;
 }

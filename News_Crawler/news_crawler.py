@@ -3,6 +3,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
+import requests
+from bs4 import BeautifulSoup
 import csv
 import re
 
@@ -43,27 +45,25 @@ def crawl_articles(category, nums, startPage=1, recursion=0):
         if ratio == max_ratio:
             category = item
     # Navigate to the category page
-    driver = webdriver.Chrome()
     url = 'https://vnexpress.net/'
-    driver.get(url + category.replace(' ', '-') + '-p' + str(startPage))
-    # Wait for the page to load and display the news items
+    search_url = url + category.replace(' ', '-') + '-p' + str(startPage)
+    # Tải trang và sử dụng BeautifulSoup để phân tích cú pháp HTML
     try:
-        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "title-news")))
-    except TimeoutException:
-        print("Timed out waiting for page to load")
-        driver.quit()
+        page = requests.get(search_url)
+        page.raise_for_status()
+        soup = BeautifulSoup(page.content, 'html.parser')
+    except requests.exceptions.HTTPError as e:
+        print(f"HTTP error occurred: {e}")
+        return []
 
-    # Get the list of news items
-    news_items = driver.find_elements(By.TAG_NAME, "h3")
-
-    # Loop through each news item and extract the titles, links, and comments
+    # Tìm các thẻ HTML chứa thông tin về bài báo
+    article_titles = soup.find_all('h3', {'class': 'title-news'})
+    # Duyệt qua các thẻ và trích xuất thông tin về bài báo
     articles = []
-    for item in news_items:
-        # Get the link to the news article
-        link = item.find_element(By.TAG_NAME, "a").get_attribute("href")
-        # Get the title of the news article
-        title = item.find_element(By.TAG_NAME, "a").text
-        # Open the news article and extract the comment
+    for item in article_titles:
+        title = item.find("a").get("title")
+        link = item.find("a").get("href")
+        driver = webdriver.Chrome() 
         driver.get(link)
         try:
             WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "content-comment")))
@@ -85,5 +85,5 @@ def crawl_articles(category, nums, startPage=1, recursion=0):
         return articles + crawl_articles(category, nums - len(articles), startPage+1, recursion+1)
         
 
-
-
+articles = crawl_articles('thời sự',2)
+print(articles)

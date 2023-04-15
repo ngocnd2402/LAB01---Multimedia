@@ -17,6 +17,8 @@ from Google_Image_Crawler.Image_Crawler import get_images_from_google
 import urllib.request
 import tempfile
 from News_Crawler.news_crawler import crawl_articles
+import json
+from fastapi.responses import JSONResponse
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory=r"D:\UIT\Năm 2\Kỳ 4\Tính toán đa phương tiện\Lab\Lab01_Crawler\static"), name="static")
@@ -97,17 +99,18 @@ async def paper_index():
     with open('./static/news_crawler/news_main.html') as f:
         content = f.read()
     return content
+from fastapi.responses import Response
+
 @app.get("/newscrawl")
-async def crawl(base_category: int, nums:int):
-    articles = crawl_articles(base_category, nums, startPage=1, count_recursion=0)
-    output = io.StringIO()
-    writer = csv.writer(output)
-    writer.writerow(['Title', 'Link', 'Comment'])
+async def crawl(base_category: str, nums:int):
+    articles = await crawl_articles(base_category, nums)  # await the coroutine object
+    output = []
     for article in articles:
-        writer.writerow([article['title'], ', '.join(article['link']), article['comment']])
-    response = StreamingResponse(iter([output.getvalue()]), media_type="text/csv")
-    response.headers["Content-Disposition"] = "attachment; filename=newspapers.csv"
-    return response   
+        output.append({'title': article['title'], 'link': article['link'], 'comments': article['comments']})
+    json_output = json.dumps(output, indent=4, ensure_ascii=False)
+    response = Response(content=json_output, media_type="application/json; charset=utf-8")
+    response.headers["Content-Disposition"] = "attachment; filename=newspapers.json"
+    return response
 
 
 if __name__ == "__main__":

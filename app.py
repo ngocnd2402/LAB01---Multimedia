@@ -21,7 +21,7 @@ import json
 from fastapi.responses import JSONResponse
 
 app = FastAPI()
-app.mount("/static", StaticFiles(directory=r"D:\UIT\Năm 2\Kỳ 4\Tính toán đa phương tiện\Lab\Lab01_Crawler\static"), name="static")
+app.mount("/static", StaticFiles(directory=r"C:\Users\dac\Crawler\Lab01_Crawler\static"), name="static")
 # Định nghĩa API endpoint tới trang chủ
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):

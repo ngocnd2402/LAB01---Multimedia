@@ -3,7 +3,8 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from time import sleep
 from bs4 import BeautifulSoup
-
+from facebook_scraper import get_posts
+from urllib.parse import urlparse, urlunparse
 
 def init_driver():
     options = Options()
@@ -60,38 +61,15 @@ def crawl_fb(url, num_posts):
     login_facebook(browser,'thanhmvnt@gmail.com','123123qwerR')
     browser.get(url)
     soup = BeautifulSoup(browser.page_source, "html.parser")
-    #extract elements contain post_id
-    items = soup.findAll('div', id='recent')
-    #extract post_id
-    postID = []
-    for item in items:
-        objects = item.findAll('article', class_="dj ft fu")
-        for object in objects:
-            object=object.attrs["data-ft"]
-            post_id = object.split('"top_level_post_id":"')[1].split('","')[0]
-            postID.append(post_id)
-        if len(postID)>= num_posts:
+    postIDs = []
+    for post in get_posts(url, pages=5):
+        postIDs.append(post['post_id'])
+        if len(postIDs) == num_posts:
             break
-        else:
-            continue
     post = []
     #extract comments in each post
-    for post_id in postID:
+    for post_id in postIDs:
         comments = get_amount_of_comments(browser, post_id, [])
         post.append({'post_id': post_id, 'comment': comments})
-        if (len(post) >= num_posts):
-            return post[:num_posts]
-        
-    if (len(post) >= num_posts):
+    if (len(post) == num_posts):
         return post[:num_posts]
-    else:
-        next_url = soup.findAll('div', class_='i')
-        url = ''
-        for item in next_url:
-            next= item.find('a')
-            if next.text == 'Hiển thị thêm':
-                url = next.attrs["href"]
-                break
-            else:
-                continue             
-        return post + crawl_fb( "https://mbasic.facebook.com"+ url,num_posts - len(post))

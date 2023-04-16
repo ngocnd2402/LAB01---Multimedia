@@ -19,14 +19,16 @@ import tempfile
 from News_Crawler.news_crawler import crawl_articles
 import json
 from fastapi.responses import JSONResponse
-from Facebook_Crawler.fb_crawler import get_amount_of_comments, get_content_comment, login_facebook, init_driver
+import natsort
+from Facebook_Crawler.fb_crawler import get_amount_of_comments, get_content_comment, login_facebook,  init_driver
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from requests_html import HTMLSession,AsyncHTMLSession
+from fastapi.responses import Response
 from facebook_scraper import get_posts
-from bs4 import BeautifulSoup
-from Facebook_Crawler.fb_crawler import crawl_fb
 from urllib.parse import urlparse, urlunparse
+from Facebook_Crawler.fb_crawler import crawl_fb
+
 app = FastAPI()
 app.mount("/static", StaticFiles(directory=r"../Lab01_Crawler/static"), name="static")
 # Định nghĩa API endpoint tới trang chủ
@@ -58,7 +60,7 @@ async def crawl(author_name: str, num_papers: int):
 
 # BEGIN GOOGLE IMAGE CRAWLER
 @app.get("/googleImageCrawler", response_class=HTMLResponse)
-async def google_index():
+async def paper_index():
     with open('./static/GG_Image/google_main.html') as f:
         content = f.read()
     return content
@@ -106,7 +108,7 @@ async def crawl_images(query:str, total:int):
 # BEGIN NEWS CRAWLER
 # Định nghĩa API endpoint cho việc crawl thông tin bài báo
 @app.get("/newsCrawler", response_class=HTMLResponse)
-async def news_index():
+async def paper_index():
     with open('./static/news_crawler/news_main.html', 'r',  encoding='utf-8') as f:
         content = f.read()
     return content
@@ -127,7 +129,7 @@ async def crawl(base_category: str, nums:int):
 
 # BEGIN FB CRAWLER
 @app.get("/facebookCrawler", response_class=HTMLResponse)
-async def fb_index():
+async def paper_index():
     with open('./static/FB_crawler/fb_main.html', 'r',  encoding='utf-8') as f:
         content = f.read()
     return content
@@ -135,10 +137,7 @@ async def fb_index():
 @app.get("/fbcrawl")
 async def crawl(url: str, num_posts: int):
     parsed_url = urlparse(url)
-    new_netloc = 'mbasic.facebook.com'
-    new_parsed_url = parsed_url._replace(netloc=new_netloc)
-    new_url = urlunparse(new_parsed_url)
-    posts  = crawl_fb(new_url,num_posts=num_posts)
+    posts  = crawl_fb(parsed_url,num_posts=num_posts)
     output = []
     for post in posts:
         output.append({'post_id': post['post_id'], 'comment': post['comment']})
@@ -146,9 +145,8 @@ async def crawl(url: str, num_posts: int):
     response = Response(content=json_output, media_type="application/json; charset=utf-8")
     response.headers["Content-Disposition"] = "attachment; filename=posts.json"
     return response
-    
 # END FBS CRAWLER
 
 
 if __name__ == "__main__":
-    uvicorn.run('app:app', host="127.0.0.1", port=5000, reload = True)
+    uvicorn.run('app:app', host="127.0.0.1", port=3000, reload = True)

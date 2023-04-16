@@ -26,7 +26,7 @@ from requests_html import HTMLSession,AsyncHTMLSession
 from facebook_scraper import get_posts
 from bs4 import BeautifulSoup
 from Facebook_Crawler.fb_crawler import crawl_fb
-
+from urllib.parse import urlparse, urlunparse
 app = FastAPI()
 app.mount("/static", StaticFiles(directory=r"../Lab01_Crawler/static"), name="static")
 # Định nghĩa API endpoint tới trang chủ
@@ -134,9 +134,11 @@ async def fb_index():
 
 @app.get("/fbcrawl")
 async def crawl(url: str, num_posts: int):
-    endpoint = url.split('/')[-1]
-    url = "https://mbasic.facebook.com/{endpoint}"
-    posts  = crawl_fb(url = url,num_posts=num_posts)
+    parsed_url = urlparse(url)
+    new_netloc = 'mbasic.facebook.com'
+    new_parsed_url = parsed_url._replace(netloc=new_netloc)
+    new_url = urlunparse(new_parsed_url)
+    posts  = crawl_fb(new_url,num_posts=num_posts)
     output = []
     for post in posts:
         output.append({'post_id': post['post_id'], 'comment': post['comment']})

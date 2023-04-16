@@ -40,3 +40,6 @@ async def crawl_articles(category, nums, startPage=1):
         return articles
     else:
         return articles + await crawl_articles(category, nums - len(articles), startPage+1)
+
+article = crawl_articles('kinh doanh', 2)
+print(article)

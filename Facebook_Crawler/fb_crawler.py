@@ -95,6 +95,3 @@ def crawl_fb(url, num_posts):
             else:
                 continue             
         return post + crawl_fb( "https://mbasic.facebook.com"+ url,num_posts - len(post))
-
-# fb = crawl_fb("https://mbasic.facebook.com/neuconfessions", 6)
-# print(fb)

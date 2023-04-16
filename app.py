@@ -29,7 +29,7 @@ from facebook_scraper import get_posts
 from bs4 import BeautifulSoup
 
 app = FastAPI()
-app.mount("/static", StaticFiles(directory=r"D:\UIT\Năm 2\Kỳ 4\Tính toán đa phương tiện\Lab\Lab01_Crawler\static"), name="static")
+app.mount("/static", StaticFiles(directory=r"C:\Users\dac\Crawler\Lab01_Crawler\static"), name="static")
 # Định nghĩa API endpoint tới trang chủ
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
@@ -139,7 +139,7 @@ async def crawl_fb(url: str, num_posts: int):
     url = url.split('/')[-1]
     browser = init_driver()
     #login facebook
-    login_facebook(browser,'nguyenduyngoccter@gmail.com','Duyngocdev2003')
+    login_facebook(browser,'','')
     browser.get(url)
     soup = BeautifulSoup(browser.page_source, "html.parser")
     #extract elements contain post_id

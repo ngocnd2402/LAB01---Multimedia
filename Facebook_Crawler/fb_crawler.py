@@ -7,11 +7,9 @@ import random
 from bs4 import BeautifulSoup
 import time
 import logging
-import requests
-from selenium.webdriver.support.ui import WebDriverWait
+import re
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException
-from requests_html import HTMLSession,AsyncHTMLSession
+
 
 
 def init_driver():
@@ -59,55 +57,67 @@ def get_content_comment(driver):
     except Exception as e:
         print(f"Error while getting comments: {e}")
 
-def get_amount_of_comments(driver, post_id, num_comments, list_comments):
+def get_amount_of_comments(driver, post_id, list_comments):
     try:
         driver.get(f"https://mbasic.facebook.com/{post_id}")
         comments = get_content_comment(driver)
-        list_comments.append(comments)
-        while len(comments) < num_comments:
-            try:
-                next_btn = driver.find_elements(By.XPATH, '//*[contains(@id,"see_next")]/a')
-                if len(next_btn) > 0:
-                    next_btn[0].click()
-                    new_comments = get_content_comment(driver)
-                    list_comments.append(new_comments)
-                    comments.extend(new_comments)
-                else:
-                    break
-            except:
-                print('Error while crawling comment content.')
+        list_comments.append(comments)      
+        try:
+            next_btn = driver.find_elements(By.XPATH, '//*[contains(@id,"see_next")]/a')
+            if len(next_btn) > 0:
+                next_btn[0].click()
+                new_comments = get_content_comment(driver)
+                list_comments.append(new_comments)
+                comments.extend(new_comments)
+        except:
+            print('Error while crawling comment content.')
         return list_comments
     except:
         print(f"Error while getting comments for post ID {post_id}")
 
-async def crawl_fb(num_posts, num_comments):
-    logging.basicConfig(level=logging.INFO)
-    session = AsyncHTMLSession()
-    make_login(session)
-    r = None
-    while True:
-        r = await session.get(f"https://touch.facebook.com/neuconfessions")
-        await r.html.arender(sleep=1, timeout=30)
-        time.sleep(3)
-        if r.ok:
-            break
-
-    postID = []
-    post_text_elements = r.html.find('._3drp')
-    for element in post_text_elements:
-        post = element.find('article')
-        post = post.attrs["data-ft"]
-        post_id = post.split('"post_id":"')[1].split('","')[0]
-        postID.append(post_id)
-
-    post = []
+def crawl_fb(url, num_posts):
     browser = init_driver()
-    login_facebook(browser, "", "")
+    #login facebook
+    login_facebook(browser,'0328518596','ThanhNhan266043**')
+    browser.get(url)
+    soup = BeautifulSoup(browser.page_source, "html.parser")
+    #extract elements contain post_id
+    items = soup.findAll('div', id='recent')
+    #extract post_id
+    postID = []
+    for item in items:
+        objects = item.findAll('article', class_="dj ft fu")
+        for object in objects:
+            object=object.attrs["data-ft"]
+            post_id = object.split('"post_id":"')[1].split('","')[0]
+            postID.append(post_id)
+        if len(postID)>= num_posts:
+            break
+        else:
+            continue
+    post = []
+    #extract comments in each post
     for post_id in postID:
-        comments = get_amount_of_comments(browser, post_id, num_comments, [])
+        comments = get_amount_of_comments(browser, post_id, [])
         post.append({'post_id': post_id, 'comment': comments})
-
+        if (len(post) >= num_posts):
+            return post[:num_posts]
+        
     if (len(post) >= num_posts):
         return post[:num_posts]
     else:
-        return post + crawl_fb(num_posts - len(post), num_comments)
+        next_url = soup.findAll('div', class_='i')
+        url = ''
+        for item in next_url:
+            next= item.find('a')
+            if next.text == 'Hiển thị thêm':
+                url = next.attrs["href"]
+                break
+            else:
+                continue             
+        return post + crawl_fb( "https://mbasic.facebook.com"+ url,num_posts - len(post))
+
+# fb = crawl_fb("https://mbasic.facebook.com/neuconfessions", 6)
+# print(fb)
+
+

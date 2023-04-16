@@ -2,14 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from time import sleep
-from selenium.common.exceptions import NoSuchElementException
-import random
 from bs4 import BeautifulSoup
-import time
-import logging
-import re
-from selenium.webdriver.support import expected_conditions as EC
-
 
 
 def init_driver():
@@ -27,20 +20,6 @@ def login_facebook(driver, username, password):
     text_password.send_keys(password)
     text_password.submit()
 
-def make_login(session):
-    """Returns a Session object logged in with credentials.
-    """
-    login_form_url = 'https://mbasic.facebook.com/login/?next&ref=dbl&fl&login_from_aymh=1&refid=8'
- 
-    params = {'email':'', 'pass':''}
- 
-    while True:
-        time.sleep(3)
-        logged_request = session.post(login_form_url, data=params)
-        
-        if logged_request.ok:
-            logging.info('[*] Logged in.')
-            break
 
 def get_content_comment(driver):
     try:
@@ -78,7 +57,7 @@ def get_amount_of_comments(driver, post_id, list_comments):
 def crawl_fb(url, num_posts):
     browser = init_driver()
     #login facebook
-    login_facebook(browser,'0328518596','ThanhNhan266043**')
+    login_facebook(browser,'','')
     browser.get(url)
     soup = BeautifulSoup(browser.page_source, "html.parser")
     #extract elements contain post_id

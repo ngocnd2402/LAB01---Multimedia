@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Crawl ACM Papers</title>
+        <title>Facebook Crawler</title>
         <link rel="stylesheet" href="/static/FB_crawler/fb.css">
     </head>
     <body>
@@ -14,15 +14,15 @@
           </div>
 
           <div class="crawl">
-            <form action="/papercrawl" method="get" class="crawl" autocomplete="off"> 
+            <form action="/fbcrawl" method="get" class="crawl" autocomplete="off"> 
                 <div class="quotes">
                     <h1>Facebook Fanpage Crawler</h1>
                 </div>
                 
-                <label for="author_name" class = 'information'>Author name:</label>
-                <input type="text" id="author_name" name="author_name"><br><br>
-                <label for="num_papers" class = 'information'>Number of papers:</label>
-                <input type="number" id="num_papers" name="num_papers"><br><br>
+                <label for="url" class = 'information'>Link Fanpage:</label>
+                <input type="text" id="url" name="url"><br><br>
+                <label for="num_posts" class = 'information'>Number of posts:</label>
+                <input type="number" id="num_posts" name="num_posts"><br><br>
                 <div id="crawl">
                     <input type="submit" value="Crawl">
                 </div>

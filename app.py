@@ -19,6 +19,14 @@ import tempfile
 from News_Crawler.news_crawler import crawl_articles
 import json
 from fastapi.responses import JSONResponse
+from urllib.parse import urlparse
+import natsort
+from Facebook_Crawler.fb_crawler import get_amount_of_comments, get_content_comment, login_facebook, init_driver
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
+from requests_html import HTMLSession,AsyncHTMLSession
+from facebook_scraper import get_posts
+from bs4 import BeautifulSoup
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory=r"D:\UIT\Năm 2\Kỳ 4\Tính toán đa phương tiện\Lab\Lab01_Crawler\static"), name="static")
@@ -69,14 +77,18 @@ async def crawl_images(query:str, total:int):
     # Create a temporary directory to store the images
     with tempfile.TemporaryDirectory() as temp_dir:
         for i, url in enumerate(image_urls):
-            file_name = str(i + 1) + '.jpg'
+            file_name = f'{i + 1}.jpg'
             file_path = os.path.join(temp_dir, file_name)
             # Download the image and save it to the temporary directory
             with urllib.request.urlopen(url) as response:
                 img_content = response.read()
                 with open(file_path, 'wb') as f:
                     f.write(img_content)
-
+            time.sleep(0.5)
+            # Open the image with PIL and resize it to a desired size
+            img = Image.open(file_path)
+            img = img.resize((img.width * 3, img.height * 3))
+            img.save(file_path)
         # Create a zip file from the temporary directory
         zip_path = os.path.join(tempfile.gettempdir(), 'images.zip')
         with zipfile.ZipFile(zip_path, 'w', compression=zipfile.ZIP_DEFLATED) as zip_file:
@@ -90,13 +102,13 @@ async def crawl_images(query:str, total:int):
         # Prepare the response and return it
         response = FileResponse(zip_path, media_type='application/octet-stream', filename='images.zip')
         return response
-# END GOOGLE IMAGE CRAWLER 
+# END GOOGLE IMAGE CRAWLER  
 
-# BEGIN PAPER CRAWLER
+# BEGIN NEWS CRAWLER
 # Định nghĩa API endpoint cho việc crawl thông tin bài báo
 @app.get("/newsCrawler", response_class=HTMLResponse)
 async def paper_index():
-    with open('./static/news_crawler/news_main.html') as f:
+    with open('./static/news_crawler/news_main.html', 'r',  encoding='utf-8') as f:
         content = f.read()
     return content
 from fastapi.responses import Response
@@ -111,7 +123,63 @@ async def crawl(base_category: str, nums:int):
     response = Response(content=json_output, media_type="application/json; charset=utf-8")
     response.headers["Content-Disposition"] = "attachment; filename=newspapers.json"
     return response
+# END NEWS CRAWLER
+
+
+# BEGIN FB CRAWLER
+@app.get("/facebookCrawler", response_class=HTMLResponse)
+async def paper_index():
+    with open('./static/FB_crawler/fb_main.html', 'r',  encoding='utf-8') as f:
+        content = f.read()
+    return content
+
+
+@app.get("/fbcrawl")
+async def crawl_fb(url: str, num_posts: int):
+    url = url.split('/')[-1]
+    browser = init_driver()
+    #login facebook
+    login_facebook(browser,'nguyenduyngoccter@gmail.com','Duyngocdev2003')
+    browser.get(url)
+    soup = BeautifulSoup(browser.page_source, "html.parser")
+    #extract elements contain post_id
+    items = soup.findAll('div', id='recent')
+    #extract post_id
+    postID = []
+    for item in items:
+        objects = item.findAll('article', class_="dj ft fu")
+        for object in objects:
+            object=object.attrs["data-ft"]
+            post_id = object.split('"post_id":"')[1].split('","')[0]
+            postID.append(post_id)
+        if len(postID)>= num_posts:
+            break
+        else:
+            continue
+    post = []
+    #extract comments in each post
+    for post_id in postID:
+        comments = get_amount_of_comments(browser, post_id, [])
+        post.append({'post_id': post_id, 'comment': comments})
+        if (len(post) >= num_posts):
+            return post[:num_posts]
+        
+    if (len(post) >= num_posts):
+        return post[:num_posts]
+    else:
+        next_url = soup.findAll('div', class_='i')
+        url = ''
+        for item in next_url:
+            next= item.find('a')
+            if next.text == 'Hiển thị thêm':
+                url = next.attrs["href"]
+                break
+            else:
+                continue             
+        return post + crawl_fb( "https://mbasic.facebook.com"+ url,num_posts - len(post))
+    
+# END FBS CRAWLER
 
 
 if __name__ == "__main__":
-    uvicorn.run('app:app', host="127.0.0.1", port=3000, reload = True)
+    uvicorn.run('app:app', host="127.0.0.1", port=5000, reload = True)

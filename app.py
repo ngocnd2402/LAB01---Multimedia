@@ -19,14 +19,13 @@ import tempfile
 from News_Crawler.news_crawler import crawl_articles
 import json
 from fastapi.responses import JSONResponse
-from urllib.parse import urlparse
-import natsort
 from Facebook_Crawler.fb_crawler import get_amount_of_comments, get_content_comment, login_facebook, init_driver
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from requests_html import HTMLSession,AsyncHTMLSession
 from facebook_scraper import get_posts
 from bs4 import BeautifulSoup
+from Facebook_Crawler.fb_crawler import crawl_fb
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory=r"../Lab01_Crawler/static"), name="static")
@@ -59,7 +58,7 @@ async def crawl(author_name: str, num_papers: int):
 
 # BEGIN GOOGLE IMAGE CRAWLER
 @app.get("/googleImageCrawler", response_class=HTMLResponse)
-async def paper_index():
+async def google_index():
     with open('./static/GG_Image/google_main.html') as f:
         content = f.read()
     return content
@@ -107,7 +106,7 @@ async def crawl_images(query:str, total:int):
 # BEGIN NEWS CRAWLER
 # Định nghĩa API endpoint cho việc crawl thông tin bài báo
 @app.get("/newsCrawler", response_class=HTMLResponse)
-async def paper_index():
+async def news_index():
     with open('./static/news_crawler/news_main.html', 'r',  encoding='utf-8') as f:
         content = f.read()
     return content
@@ -128,55 +127,23 @@ async def crawl(base_category: str, nums:int):
 
 # BEGIN FB CRAWLER
 @app.get("/facebookCrawler", response_class=HTMLResponse)
-async def paper_index():
+async def fb_index():
     with open('./static/FB_crawler/fb_main.html', 'r',  encoding='utf-8') as f:
         content = f.read()
     return content
 
-
 @app.get("/fbcrawl")
-async def crawl_fb(url: str, num_posts: int):
-    url = url.split('/')[-1]
-    browser = init_driver()
-    #login facebook
-    login_facebook(browser,'','')
-    browser.get(url)
-    soup = BeautifulSoup(browser.page_source, "html.parser")
-    #extract elements contain post_id
-    items = soup.findAll('div', id='recent')
-    #extract post_id
-    postID = []
-    for item in items:
-        objects = item.findAll('article', class_="dj ft fu")
-        for object in objects:
-            object=object.attrs["data-ft"]
-            post_id = object.split('"post_id":"')[1].split('","')[0]
-            postID.append(post_id)
-        if len(postID)>= num_posts:
-            break
-        else:
-            continue
-    post = []
-    #extract comments in each post
-    for post_id in postID:
-        comments = get_amount_of_comments(browser, post_id, [])
-        post.append({'post_id': post_id, 'comment': comments})
-        if (len(post) >= num_posts):
-            return post[:num_posts]
-        
-    if (len(post) >= num_posts):
-        return post[:num_posts]
-    else:
-        next_url = soup.findAll('div', class_='i')
-        url = ''
-        for item in next_url:
-            next= item.find('a')
-            if next.text == 'Hiển thị thêm':
-                url = next.attrs["href"]
-                break
-            else:
-                continue             
-        return post + crawl_fb( "https://mbasic.facebook.com"+ url,num_posts - len(post))
+async def crawl(url: str, num_posts: int):
+    endpoint = url.split('/')[-1]
+    url = "https://mbasic.facebook.com/{endpoint}"
+    posts  = crawl_fb(url = url,num_posts=num_posts)
+    output = []
+    for post in posts:
+        output.append({'post_id': post['post_id'], 'comment': post['comment']})
+    json_output = json.dumps(output, indent=4, ensure_ascii=False)
+    response = Response(content=json_output, media_type="application/json; charset=utf-8")
+    response.headers["Content-Disposition"] = "attachment; filename=posts.json"
+    return response
     
 # END FBS CRAWLER
 

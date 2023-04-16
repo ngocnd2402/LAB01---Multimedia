@@ -57,7 +57,7 @@ def get_amount_of_comments(driver, post_id, list_comments):
 def crawl_fb(url, num_posts):
     browser = init_driver()
     #login facebook
-    login_facebook(browser,'','')
+    login_facebook(browser,'thanhmvnt@gmail.com','123123qwerR')
     browser.get(url)
     soup = BeautifulSoup(browser.page_source, "html.parser")
     #extract elements contain post_id
@@ -68,7 +68,7 @@ def crawl_fb(url, num_posts):
         objects = item.findAll('article', class_="dj ft fu")
         for object in objects:
             object=object.attrs["data-ft"]
-            post_id = object.split('"post_id":"')[1].split('","')[0]
+            post_id = object.split('"top_level_post_id":"')[1].split('","')[0]
             postID.append(post_id)
         if len(postID)>= num_posts:
             break
